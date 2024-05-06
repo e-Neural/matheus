@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matheus
+  namespace: prod
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-prod-matheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-prod-matheus
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-prod-matheus
+    spec:
+      imagePullSecrets:
+      - name: pipeline-docker-registry
+      containers:
+      - name: matheus
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        ports:
+        - containerPort: 3000
+          name: 3000tcp02
+          protocol: TCP
+        - containerPort: 3010
+          name: 3010tcp02
+          protocol: TCP
